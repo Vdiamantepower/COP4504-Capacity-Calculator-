@@ -8,15 +8,35 @@
 </head>
 <body class="bg-light">
 <div class="container mt-5">
+
+    <!-- Nav Tabs -->
+    <nav class="nav nav-tabs justify-content-center mb-4">
+        <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="/">Calculator</a>
+        <a class="nav-link {% if request.path == '/history' %}active{% endif %}" href="/history">History</a>
+    </nav>
+
     <h1 class="text-center text-primary">Capacity Calculator</h1>
     <p class="text-center">Enter team information and per-sprint details to calculate total capacity in points.</p>
+    {% if save_success %}
+        <p class="text-center text-success fw-bold">✔️ PI Calculation saved successfully!</p>
+    {% endif %}
 
+    
+       
+    
     <!-- Global Inputs Card -->
     <div class="card p-4 mb-4">
         <form method="POST" action="/">
+           
+                <!-- PI Name Input -->
+                <div class="mb-3">
+                    <label for="pi_name" class="form-label">Planning Increment Name</label>
+                    <input type="text" class="form-control" id="pi_name" name="pi_name" placeholder="e.g., Q3 PI" required>
+                </div>
+            
             <h5>Team Info (applies to all sprints)</h5>
             <div class="mb-3">
-                <label for="num_devs" class="form-label">Number of num_devs</label>
+                <label for="num_devs" class="form-label">Number of Developers</label>
                 <input type="number" class="form-control" id="num_devs" name="num_devs" min="1" value="5" required>
             </div>
             <div class="mb-3">
@@ -24,7 +44,8 @@
                 <input type="number" class="form-control" id="avg_story_points" name="avg_story_points" min="1" value="10" required>
             </div>
             <div class="mb-3">
-                <label for="unplanned_days_total class="form-label">Unplanned Time Off (days total for PI)</label>
+                <label for="unplanned_days_total" class="form-label">Unplanned Time Off (days total for PI)</label>
+
                 <input type="number" class="form-control" id="unplanned_days_total" name="unplanned_days_total" min="0" value="0">
             </div>
 
@@ -56,8 +77,14 @@
         </form>
     </div>
 
-    <!-- Results Section -->
-    {% if sprint_capacity %}
+<!-- Results Section -->
+{% if sprint_capacity %}
+    {% if pi_name %}
+        <h4 class="text-secondary mb-4">Results for: <strong>{{ pi_name }}</strong></h4>
+    {% endif %}
+    
+
+    
     <div class="row">
         {% for cap in sprint_capacity %}
         <div class="col-md-4 mb-3">
@@ -70,6 +97,7 @@
         </div>
         {% endfor %}
     </div>
+
 
     <div class="card border-primary mb-5">
         <div class="card-body">
