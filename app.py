@@ -86,6 +86,66 @@ def home():
 
 
 
+# Export Route
+@app.route('/download')
+def download_excel():
+    connection = sqlite3.connect('pi_capacity.db')
+    cursor = connection.cursor()
+    cursor.execute('SELECT pi_name, sprint_1, sprint_2, sprint_3, sprint_4, sprint_5, total_capacity FROM pi_results ORDER BY id DESC LIMIT 1')
+    result = cursor.fetchone()
+    connection.close()
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "PI Capacity Result"
+
+    headers = ["PI Name", "Sprint 1", "Sprint 2", "Sprint 3", "Sprint 4", "Sprint 5", "Total Capacity"]
+    ws.append(headers)
+    if result:
+        ws.append(result)
+    else:
+        ws.append(["No data found"] + [""] * 6)
+
+    file_stream = BytesIO()
+    wb.save(file_stream)
+    file_stream.seek(0)
+
+    return send_file(
+        file_stream,
+        as_attachment=True,
+        download_name='pi_capacity_result.xlsx',
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+
+#Export All Route
+@app.route('/download_all')
+def download_all():
+    connection = sqlite3.connect('pi_capacity.db')
+    cursor = connection.cursor()
+    cursor.execute('SELECT pi_name, sprint_1, sprint_2, sprint_3, sprint_4, sprint_5, total_capacity FROM pi_results')
+    results = cursor.fetchall()
+    connection.close()
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "All PI Results"
+
+    headers = ["PI Name", "Sprint 1", "Sprint 2", "Sprint 3", "Sprint 4", "Sprint 5", "Total Capacity"]
+    ws.append(headers)
+
+    for row in results:
+        ws.append(row)
+
+    file_stream = BytesIO()
+    wb.save(file_stream)
+    file_stream.seek(0)
+
+    return send_file(
+        file_stream,
+        as_attachment=True,
+        download_name='all_pi_results.xlsx',
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
 
 
 

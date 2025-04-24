@@ -15,7 +15,15 @@
             <a class="nav-link {% if request.path == '/history' %}active{% endif %}" href="/history">History</a>
         </nav>
 
-        <h1 class="text-primary mb-4 text-center">Saved PI Results</h1>
+       
+       <!--History Table-->
+       <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-primary m-0">Saved PI Results</h1>
+        <form action="/download_all" method="get">
+            <button type="submit" class="btn btn-sm btn-outline-primary">Download All as Excel</button>
+        </form>
+        </div>
+    
        
         
 
